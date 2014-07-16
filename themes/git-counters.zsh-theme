@@ -32,8 +32,16 @@ function _git_prompt_count() {
   echo $count
 }
 
+function _git_prompt_staged() {
+  VALUE=$(command git diff-index --cached HEAD 2> /dev/null | wc -l | tr -d ' ')
+  if [[ $VALUE -gt 0 ]]; then
+    echo -n "$ZSH_THEME_GIT_PROMPT_STAGED_PREFIX$VALUE$ZSH_THEME_GIT_PROMPT_STAGED_SUFFIX"
+    PAREN=1
+  fi
+}
+
 function _git_prompt_added() {
-  VALUE=$(_git_prompt_count '^A\s+')
+  VALUE=$(_git_prompt_count '^A(M)\s+')
   if [[ $VALUE -gt 0 ]]; then
     echo -n "$ZSH_THEME_GIT_PROMPT_ADDED_PREFIX$VALUE$ZSH_THEME_GIT_PROMPT_ADDED_SUFFIX"
     PAREN=1
@@ -58,7 +66,7 @@ function _git_prompt_conflict() {
 }
 
 function _git_prompt_modified() {
-  VALUE=$(_git_prompt_count '(^(\s+|A)?M\s+)')
+  VALUE=$(_git_prompt_count '(^(\s|M)+?M\s+)')
   if [[ $VALUE -gt 0 ]]; then
     echo -n "$ZSH_THEME_GIT_PROMPT_MODIFIED_PREFIX$VALUE$ZSH_THEME_GIT_PROMPT_MODIFIED_SUFFIX"
     PAREN=1
@@ -84,6 +92,7 @@ function _git_prompt_untracked() {
 
 function _git_prompt_status() {
   PAREN=0
+  _git_prompt_staged
   _git_prompt_added
   _git_prompt_deleted
   _git_prompt_conflict
@@ -101,10 +110,12 @@ ZSH_THEME_GIT_PROMPT_PREFIX=" (%{$fg[yellow]%}"
 ZSH_THEME_GIT_PROMPT_SUFFIX=""
 ZSH_THEME_GIT_PROMPT_DIRTY="%{$reset_color%}|"
 ZSH_THEME_GIT_PROMPT_CLEAN="%{$reset_color%}|%{$fg[green]%}✔%{$reset_color%})"
-ZSH_THEME_GIT_PROMPT_AHEAD_REMOTE_PREFIX="↑·"
+ZSH_THEME_GIT_PROMPT_AHEAD_REMOTE_PREFIX="%{$reset_color%} ↑·"
 ZSH_THEME_GIT_PROMPT_AHEAD_REMOTE_SUFFIX=""
 ZSH_THEME_GIT_PROMPT_BEHIND_REMOTE_PREFIX="%{$reset_color%} ↓·"
 ZSH_THEME_GIT_PROMPT_BEHIND_REMOTE_SUFFIX=""
+ZSH_THEME_GIT_PROMPT_STAGED_PREFIX="%{$fg[green]%}● "
+ZSH_THEME_GIT_PROMPT_STAGED_SUFFIX="%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_ADDED_PREFIX="%{$fg[green]%}✚ "
 ZSH_THEME_GIT_PROMPT_ADDED_SUFFIX="%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_DELETED_PREFIX="%{$fg[red]%}✕ "
