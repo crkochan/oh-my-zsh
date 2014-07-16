@@ -74,7 +74,7 @@ function _git_prompt_modified() {
 }
 
 function _git_prompt_renamed() {
-  VALUE=$(_git_prompt_count '^R\s+')
+  VALUE=$(_git_prompt_count '^R(\s|M)\s')
   if [[ $VALUE -gt 0 ]]; then
     echo -n "$ZSH_THEME_GIT_PROMPT_RENAMED_PREFIX$VALUE$ZSH_THEME_GIT_PROMPT_RENAMED_SUFFIX"
     PAREN=1
