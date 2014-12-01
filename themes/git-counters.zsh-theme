@@ -27,8 +27,12 @@ function _git_remote_status() {
   fi
 }
 
+function _git_status_output(){
+  git_status=$(command git status --porcelain -b 2>/dev/null)
+}
+
 function _git_prompt_count() {
-  count=$(command git status --porcelain -b 2> /dev/null | egrep $1 | wc -l | tr -d ' ')
+  count=$(command echo $git_status | egrep $1 | wc -l | tr -d ' ')
   echo $count
 }
 
@@ -92,6 +96,7 @@ function _git_prompt_untracked() {
 
 function _git_prompt_status() {
   PAREN=0
+  _git_status_output
   _git_prompt_staged
   _git_prompt_added
   _git_prompt_deleted
